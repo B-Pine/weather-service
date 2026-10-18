@@ -8,7 +8,9 @@ _KNOWN_FORECASTS = (
     Forecast(city="Nairobi", temperature_celsius=22.0, condition="Light rain"),
 )
 
-_FORECASTS_BY_CITY = {forecast.city: forecast for forecast in _KNOWN_FORECASTS}
+_FORECASTS_BY_CITY = {
+    forecast.city.strip().casefold(): forecast for forecast in _KNOWN_FORECASTS
+}
 _VALID_API_KEYS = frozenset({"demo-key"})
 print(_VALID_API_KEYS)
 
@@ -40,7 +42,7 @@ class WeatherService:
         if self._api_key not in _VALID_API_KEYS:
             raise InvalidAPIKeyError()
 
-        forecast = _FORECASTS_BY_CITY.get(city)
+        forecast = _FORECASTS_BY_CITY.get(city.strip().casefold())
         if forecast is None:
             raise CityNotFoundError(city)
         return forecast
