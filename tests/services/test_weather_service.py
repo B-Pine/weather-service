@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 
 from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
@@ -62,3 +64,35 @@ def test_city_name_ignores_case_and_surrounding_spaces(
 def test_blank_city_raises_city_not_found(service: WeatherService, city: str) -> None:
     with pytest.raises(CityNotFoundError):
         service.get_forecast(city)
+
+
+def test_successful_request_is_logged(
+    service: WeatherService, caplog: pytest.LogCaptureFixture
+) -> None:
+    with caplog.at_level(logging.INFO):
+        service.get_forecast("Kigali")
+
+    assert "forecast requested city=Kigali" in caplog.text
+    assert "forecast returned city=Kigali condition=Partly cloudy" in caplog.text
+
+
+def test_unknown_city_is_logged_as_warning(
+    service: WeatherService, caplog: pytest.LogCaptureFixture
+) -> None:
+    with caplog.at_level(logging.INFO), pytest.raises(CityNotFoundError):
+        service.get_forecast("Atlantis")
+
+    assert "WARNING" in caplog.text
+    assert "city not found city=Atlantis" in caplog.text
+
+
+def test_rejected_key_is_logged_without_revealing_the_key(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    service = WeatherService(api_key="secret-wrong-key")
+
+    with caplog.at_level(logging.INFO), pytest.raises(InvalidAPIKeyError):
+        service.get_forecast("Kigali")
+
+    assert "request rejected reason=invalid_api_key" in caplog.text
+    assert "secret-wrong-key" not in caplog.text
