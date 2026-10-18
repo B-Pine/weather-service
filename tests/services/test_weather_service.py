@@ -47,3 +47,12 @@ def test_api_key_is_checked_before_the_city() -> None:
 
     with pytest.raises(InvalidAPIKeyError):
         service.get_forecast("Atlantis")
+
+
+@pytest.mark.parametrize("city", ["kigali", "KIGALI", "  Kigali  ", "kiGALi"])
+def test_city_name_ignores_case_and_surrounding_spaces(
+    service: WeatherService, city: str
+) -> None:
+    forecast = service.get_forecast(city)
+
+    assert forecast.city == "Kigali"
