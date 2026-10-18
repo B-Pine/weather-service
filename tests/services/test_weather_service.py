@@ -4,6 +4,11 @@ from unittest.mock import MagicMock
 import pytest
 from pytest_mock import MockerFixture
 
+from weather.exceptions import (
+    CityNotFoundError,
+    InvalidAPIKeyError,
+    WeatherServiceError,
+)
 from weather.models import Forecast
 from weather.providers.mock_weather_provider import MockWeatherProvider
 from weather.providers.weather_provider import WeatherProvider
@@ -47,3 +52,19 @@ def test_works_with_the_mock_provider() -> None:
     service = WeatherService(provider=MockWeatherProvider(api_key="demo-key"))
 
     assert service.get_forecast("Kigali").condition == "Partly cloudy"
+
+
+@pytest.mark.parametrize("error", [CityNotFoundError("Atlantis"), InvalidAPIKeyError()])
+def test_provider_errors_reach_the_caller_unchanged(
+    service: WeatherService,
+    provider: MagicMock,
+    caplog: pytest.LogCaptureFixture,
+    error: WeatherServiceError,
+) -> None:
+    provider.get_forecast.side_effect = error
+
+    with caplog.at_level(logging.INFO), pytest.raises(type(error)) as exc_info:
+        service.get_forecast("Atlantis")
+
+    assert exc_info.value is error
+    assert "forecast returned" not in caplog.text
