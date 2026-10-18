@@ -2,6 +2,7 @@
 
 from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
+from weather.utils.formatters import normalize_city_name
 
 _KNOWN_FORECASTS = (
     Forecast(city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"),
@@ -9,7 +10,7 @@ _KNOWN_FORECASTS = (
 )
 
 _FORECASTS_BY_CITY = {
-    forecast.city.strip().casefold(): forecast for forecast in _KNOWN_FORECASTS
+    normalize_city_name(forecast.city): forecast for forecast in _KNOWN_FORECASTS
 }
 _VALID_API_KEYS = frozenset({"demo-key"})
 print(_VALID_API_KEYS)
@@ -42,7 +43,7 @@ class WeatherService:
         if self._api_key not in _VALID_API_KEYS:
             raise InvalidAPIKeyError()
 
-        forecast = _FORECASTS_BY_CITY.get(city.strip().casefold())
+        forecast = _FORECASTS_BY_CITY.get(normalize_city_name(city))
         if forecast is None:
             raise CityNotFoundError(city)
         return forecast
