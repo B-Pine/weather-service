@@ -24,7 +24,7 @@ pre-commit install
 ## Installing in another project
 
 ```bash
-pip install git+https://github.com/<your-username>/weather-service.git@v1.0.0
+pip install git+https://github.com/B-Pine/weather-service.git@v1.0.0
 ```
 
 ## Usage
