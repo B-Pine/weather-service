@@ -4,6 +4,7 @@ import logging
 
 from weather.models import Forecast
 from weather.providers.mock_weather_provider import MockWeatherProvider
+from weather.providers.weather_provider import WeatherProvider
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +16,12 @@ class WeatherService:
     API, so results are always predictable.
     """
 
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str, provider: WeatherProvider | None = None) -> None:
         """Create the service with the API key used for every request.
 
         Args:
             api_key: The key that identifies the caller.
+            provider: The source of the forecast. Not used yet.
         """
         self._provider = MockWeatherProvider(api_key)
 

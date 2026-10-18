@@ -4,6 +4,7 @@ import logging
 
 from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
+from weather.providers.weather_provider import WeatherProvider
 from weather.utils.formatters import normalize_city_name
 
 _KNOWN_FORECASTS = (
@@ -18,7 +19,7 @@ _VALID_API_KEYS = frozenset({"demo-key"})
 logger = logging.getLogger(__name__)
 
 
-class MockWeatherProvider:
+class MockWeatherProvider(WeatherProvider):
     """Simulates a weather API that returns predefined forecasts.
 
     Like a real API, it rejects requests with an invalid API key before

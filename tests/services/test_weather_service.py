@@ -1,9 +1,11 @@
 import logging
 
 import pytest
+from pytest_mock import MockerFixture
 
 from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
+from weather.providers.weather_provider import WeatherProvider
 from weather.services.weather_service import WeatherService
 
 VALID_API_KEY = "demo-key"
@@ -96,3 +98,15 @@ def test_rejected_key_is_logged_without_revealing_the_key(
 
     assert "request rejected reason=invalid_api_key" in caplog.text
     assert "secret-wrong-key" not in caplog.text
+
+
+def test_forecast_comes_from_the_injected_provider(mocker: MockerFixture) -> None:
+    testville = Forecast(city="Testville", temperature_celsius=-5.0, condition="Snow")
+    provider = mocker.create_autospec(WeatherProvider, instance=True)
+    provider.get_forecast.return_value = testville
+    service = WeatherService(api_key=VALID_API_KEY, provider=provider)
+
+    forecast = service.get_forecast("Testville")
+
+    assert forecast == testville
+    provider.get_forecast.assert_called_once_with("Testville")
