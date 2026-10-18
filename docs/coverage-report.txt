@@ -1,0 +1,15 @@
+﻿Name                                         Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------------------
+weather\__init__.py                              0      0      0      0   100%
+weather\exceptions.py                            8      0      0      0   100%
+weather\models\__init__.py                       2      0      0      0   100%
+weather\models\forecast.py                       3      0      0      0   100%
+weather\providers\__init__.py                    0      0      0      0   100%
+weather\providers\mock_weather_provider.py      25      0      4      0   100%
+weather\providers\weather_provider.py            5      0      0      0   100%
+weather\services\__init__.py                     0      0      0      0   100%
+weather\services\weather_service.py             12      0      0      0   100%
+weather\utils\__init__.py                        0      0      0      0   100%
+weather\utils\formatters.py                      2      0      0      0   100%
+----------------------------------------------------------------------------------------
+TOTAL                                           57      0      4      0   100%
