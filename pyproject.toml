@@ -26,3 +26,16 @@ source = ["weather"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 95
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weather-service"
+version = "1.0.0"
+description = "Mock weather API service module built with TDD."
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+include = ["weather*"]

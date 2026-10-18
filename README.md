@@ -21,6 +21,12 @@ pre-commit install
 > **Windows:** if mypy is blocked with `WinError 4551`, install its pure-Python build:
 > `pip uninstall mypy -y` then `pip install --no-binary mypy mypy==1.11.2`
 
+## Installing in another project
+
+```bash
+pip install git+https://github.com/B-Pine/weather-service.git@v1.0.0
+```
+
 ## Usage
 
 ```python
