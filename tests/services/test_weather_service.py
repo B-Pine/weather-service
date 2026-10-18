@@ -1,13 +1,15 @@
 import pytest
 
-from weather.exceptions import CityNotFoundError
+from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
 from weather.services.weather_service import WeatherService
+
+VALID_API_KEY = "demo-key"
 
 
 @pytest.fixture
 def service() -> WeatherService:
-    return WeatherService()
+    return WeatherService(api_key=VALID_API_KEY)
 
 
 @pytest.mark.parametrize(
@@ -30,3 +32,18 @@ def test_unknown_city_raises_city_not_found(service: WeatherService) -> None:
         service.get_forecast("Atlantis")
 
     assert exc_info.value.city == "Atlantis"
+
+
+@pytest.mark.parametrize("api_key", ["wrong-key", "", "DEMO-KEY"])
+def test_invalid_api_key_raises(api_key: str) -> None:
+    service = WeatherService(api_key=api_key)
+
+    with pytest.raises(InvalidAPIKeyError):
+        service.get_forecast("Kigali")
+
+
+def test_api_key_is_checked_before_the_city() -> None:
+    service = WeatherService(api_key="wrong-key")
+
+    with pytest.raises(InvalidAPIKeyError):
+        service.get_forecast("Atlantis")

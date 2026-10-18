@@ -14,6 +14,14 @@ _FORECASTS_BY_CITY = {forecast.city: forecast for forecast in _KNOWN_FORECASTS}
 class WeatherService:
     """Provides weather forecasts for cities."""
 
+    def __init__(self, api_key: str) -> None:
+        """Create the service with the API key used for every request.
+
+        Args:
+            api_key: The key that identifies the caller.
+        """
+        self._api_key = api_key
+
     def get_forecast(self, city: str) -> Forecast:
         """Return the forecast for a city.
 

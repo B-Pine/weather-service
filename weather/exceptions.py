@@ -20,3 +20,15 @@ class CityNotFoundError(WeatherServiceError):
         """
         super().__init__(f"City not found: '{city}'")
         self.city = city
+
+
+class InvalidAPIKeyError(WeatherServiceError):
+    """Raised when the API key is not accepted.
+
+    The key itself is never included in the message, so it cannot leak
+    into logs or error reports.
+    """
+
+    def __init__(self) -> None:
+        """Initialize the error with a fixed message."""
+        super().__init__("Invalid API key")
