@@ -1,25 +1,83 @@
 """Weather service that returns forecasts for cities."""
 
+import logging
+
+from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
+from weather.utils.formatters import normalize_city_name
 
 _KNOWN_FORECASTS = (
     Forecast(city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"),
     Forecast(city="Nairobi", temperature_celsius=22.0, condition="Light rain"),
 )
+_FORECASTS_BY_CITY = {
+    normalize_city_name(forecast.city): forecast for forecast in _KNOWN_FORECASTS
+}
+_VALID_API_KEYS = frozenset({"demo-key"})
 
-_FORECASTS_BY_CITY = {forecast.city: forecast for forecast in _KNOWN_FORECASTS}
+logger = logging.getLogger(__name__)
 
 
 class WeatherService:
-    """Provides weather forecasts for cities."""
+    """Provides weather forecasts for a fixed set of known cities.
+
+    The service does not contact a real weather API. It returns
+    predefined forecasts, so its results are always predictable.
+    """
+
+    def __init__(self, api_key: str) -> None:
+        """Create the service with the API key used for every request.
+
+        Args:
+            api_key: The key that identifies the caller.
+        """
+        self._api_key = api_key
 
     def get_forecast(self, city: str) -> Forecast:
         """Return the forecast for a city.
 
         Args:
-            city: Name of the city.
+            city: Name of the city, for example "Kigali".
+
+        Returns:
+            The predefined forecast for the city.
+
+        Raises:
+            InvalidAPIKeyError: If the service's API key is not valid.
+            CityNotFoundError: If there is no forecast for the city.
+        """
+        logger.info("forecast requested city=%s", city)
+        self._check_api_key()
+        forecast = self._find_forecast(city)
+        logger.info(
+            "forecast returned city=%s condition=%s", forecast.city, forecast.condition
+        )
+        return forecast
+
+    def _check_api_key(self) -> None:
+        """Reject the request if the service's API key is not valid.
+
+        Raises:
+            InvalidAPIKeyError: If the API key is not valid.
+        """
+        if self._api_key not in _VALID_API_KEYS:
+            logger.warning("request rejected reason=invalid_api_key")
+            raise InvalidAPIKeyError()
+
+    def _find_forecast(self, city: str) -> Forecast:
+        """Look up the predefined forecast for a city.
+
+        Args:
+            city: Name of the city, in any letter case.
 
         Returns:
             The forecast for the city.
+
+        Raises:
+            CityNotFoundError: If there is no forecast for the city.
         """
-        return _FORECASTS_BY_CITY[city]
+        forecast = _FORECASTS_BY_CITY.get(normalize_city_name(city))
+        if forecast is None:
+            logger.warning("city not found city=%s", city)
+            raise CityNotFoundError(city)
+        return forecast
