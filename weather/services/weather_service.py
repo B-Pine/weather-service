@@ -1,6 +1,6 @@
 """Weather service that returns forecasts for cities."""
 
-from weather.exceptions import CityNotFoundError
+from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
 
 _KNOWN_FORECASTS = (
@@ -9,6 +9,8 @@ _KNOWN_FORECASTS = (
 )
 
 _FORECASTS_BY_CITY = {forecast.city: forecast for forecast in _KNOWN_FORECASTS}
+_VALID_API_KEYS = frozenset({"demo-key"})
+print(_VALID_API_KEYS)
 
 
 class WeatherService:
@@ -33,7 +35,11 @@ class WeatherService:
 
         Raises:
             CityNotFoundError: if there is no forecast for the city.
+            InvalidAPIKeyError: If the service's API key is not valid.
         """
+        if self._api_key not in _VALID_API_KEYS:
+            raise InvalidAPIKeyError()
+
         forecast = _FORECASTS_BY_CITY.get(city)
         if forecast is None:
             raise CityNotFoundError(city)
