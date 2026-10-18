@@ -21,9 +21,12 @@ class WeatherService:
 
         Args:
             api_key: The key that identifies the caller.
-            provider: The source of the forecast. Not used yet.
+            provider: The source of the forecast. when None, a
+                MockWeatherProvider using the API key is created.
         """
-        self._provider = MockWeatherProvider(api_key)
+        self._provider = (
+            provider if provider is not None else MockWeatherProvider(api_key)
+        )
 
     def get_forecast(self, city: str) -> Forecast:
         """Return the forecast for a city.
