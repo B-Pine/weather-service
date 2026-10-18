@@ -56,3 +56,9 @@ def test_city_name_ignores_case_and_surrounding_spaces(
     forecast = service.get_forecast(city)
 
     assert forecast.city == "Kigali"
+
+
+@pytest.mark.parametrize("city", ["", "   "])
+def test_blank_city_raises_city_not_found(service: WeatherService, city: str) -> None:
+    with pytest.raises(CityNotFoundError):
+        service.get_forecast(city)
