@@ -10,6 +10,7 @@ from weather.utils.formatters import normalize_city_name
 _KNOWN_FORECASTS = (
     Forecast(city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"),
     Forecast(city="Nairobi", temperature_celsius=22.0, condition="Light rain"),
+    Forecast(city="Kampala", temperature_celsius=26.0, condition="Thunderstorms"),
     Forecast(city="Dar es Salaam", temperature_celsius=30.0, condition="Sunny"),
 )
 _FORECASTS_BY_CITY = {
