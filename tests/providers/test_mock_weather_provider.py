@@ -19,6 +19,7 @@ def provider() -> MockWeatherProvider:
     [
         Forecast(city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"),
         Forecast(city="Nairobi", temperature_celsius=22.0, condition="Light rain"),
+        Forecast(city="Dar es Salaam", temperature_celsius=30.0, condition="Sunny"),
         Forecast(city="Kampala", temperature_celsius=26.0, condition="Thunderstorms"),
     ],
 )
