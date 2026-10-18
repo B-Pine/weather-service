@@ -2,14 +2,12 @@
 
 from weather.models import Forecast
 
-_FORECASTS = {
-    "Kigali": Forecast(
-        city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"
-    ),
-    "Nairobi": Forecast(
-        city="Nairobi", temperature_celsius=22.0, condition="Light rain"
-    ),
-}
+_KNOWN_FORECASTS = (
+    Forecast(city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"),
+    Forecast(city="Nairobi", temperature_celsius=22.0, condition="Light rain"),
+)
+
+_FORECASTS_BY_CITY = {forecast.city: forecast for forecast in _KNOWN_FORECASTS}
 
 
 class WeatherService:
@@ -24,4 +22,4 @@ class WeatherService:
         Returns:
             The forecast for the city.
         """
-        return _FORECASTS[city]
+        return _FORECASTS_BY_CITY[city]
