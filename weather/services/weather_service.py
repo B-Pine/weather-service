@@ -1,5 +1,6 @@
 """Weather service that returns forecasts for cities."""
 
+from weather.exceptions import CityNotFoundError
 from weather.models import Forecast
 
 _KNOWN_FORECASTS = (
@@ -21,5 +22,11 @@ class WeatherService:
 
         Returns:
             The forecast for the city.
+
+        Raises:
+            CityNotFoundError: if there is no forecast for the city.
         """
-        return _FORECASTS_BY_CITY[city]
+        forecast = _FORECASTS_BY_CITY.get(city)
+        if forecast is None:
+            raise CityNotFoundError(city)
+        return forecast
