@@ -1,5 +1,7 @@
 """Weather service that returns forecasts for cities."""
 
+import logging
+
 from weather.exceptions import CityNotFoundError, InvalidAPIKeyError
 from weather.models import Forecast
 from weather.utils.formatters import normalize_city_name
@@ -13,7 +15,8 @@ _FORECASTS_BY_CITY = {
     normalize_city_name(forecast.city): forecast for forecast in _KNOWN_FORECASTS
 }
 _VALID_API_KEYS = frozenset({"demo-key"})
-print(_VALID_API_KEYS)
+
+logger = logging.getLogger(__name__)
 
 
 class WeatherService:
@@ -40,10 +43,15 @@ class WeatherService:
             CityNotFoundError: if there is no forecast for the city.
             InvalidAPIKeyError: If the service's API key is not valid.
         """
+        logger.info("forecast requested city=%s", city)
         if self._api_key not in _VALID_API_KEYS:
+            logger.warning("request rejected reason=invalid_api_key")
             raise InvalidAPIKeyError()
-
         forecast = _FORECASTS_BY_CITY.get(normalize_city_name(city))
         if forecast is None:
+            logger.warning("city not found city=%s", city)
             raise CityNotFoundError(city)
+        logger.info(
+            "forecast returned city=%s condition=%s", forecast.city, forecast.condition
+        )
         return forecast
