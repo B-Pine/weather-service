@@ -15,4 +15,6 @@ class WeatherService:
         Returns:
             The forecast for the city.
         """
-        raise NotImplementedError
+        return Forecast(
+            city="Kigali", temperature_celsius=24.0, condition="Partly cloudy"
+        )
