@@ -175,3 +175,6 @@ The project uses trunk-based development:
 - Pull requests are merged with merge commits, never squashed, so the individual Red-Green-Refactor commits remain visible on `main`
 
 Two branches, `feat/add-kampala` and `feat/add-dar-es-salaam`, were developed in parallel and both changed the same lines. After the first was merged, the conflict was resolved by merging `main` into the second branch, keeping both cities, and running the full test suite on the resolved code before committing.
+
+## Loom Video
+[WEATHER API](https://www.loom.com/share/ad822b67e3d541198c5250b2f3110854)
